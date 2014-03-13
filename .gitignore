@@ -1,12 +1,10 @@
-*.py[cod]
-
 # C extensions
 *.so
 
 # Packages
 *.egg
 *.egg-info
-dist
+.DS_Store
 build
 eggs
 parts
