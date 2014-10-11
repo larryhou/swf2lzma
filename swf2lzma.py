@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#encoding:gb2312
 
 import os
 import pylzma
@@ -11,6 +11,9 @@ def validate(condition, msg, errorCode = 0):
     if not condition:
         stderr("ERROR#" + str(errorCode) + ":", msg)
         sys.exit(errorCode)
+
+def kilo(value):
+    return '{0:,}'.format(value)
         
 def stderr(*argv):
     print >> sys.stderr, ' '.join(str(x) for x in argv)
@@ -24,7 +27,7 @@ def compress(infile, outfile):
     validate((swf_data[1] == 'W') and (swf_data[2] == 'S'), "not a SWF file", 112)
     
     if swf_data[0] == 'Z':
-        print outfile, "is already LZMA compressed"
+        print "LZMA", outfile
         sys.exit(0)
 
     dfilesize = struct.unpack("<I", swf_data[4:8])[0] - 8
@@ -57,7 +60,8 @@ def compress(infile, outfile):
     fo.write(zdata)
     fo.close()
 
-    print 'ratio: %d%%' % round(100 - (100.0 * zsize / swf_size)), "\t-> " + outfile
+    opt_size = os.path.getsize(outfile)
+    print "%6.2f%% %7.7sB  " % (100 - (100.0 * opt_size / swf_size), kilo(swf_size - opt_size)) + outfile + ": ", kilo(swf_size) + " -> " + kilo(opt_size)
 
 
 # Format of SWF when LZMA is used:
